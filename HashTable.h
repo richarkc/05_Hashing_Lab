@@ -123,20 +123,24 @@ void HashTable<Key,T>::remove(Key k){
 
 template <class Key, class T>
 T HashTable<Key,T>::find(Key k){
-  //TODO
-  T dummy;
-  return dummy;
+	if (keyExists(k)){
+		return (backingArray[calcIndex(k)].x);
+	}
+	else
+		throw std::string("Error: Key does not exist in hash table");
+  
 }
 
 template <class Key, class T>
 bool HashTable<Key,T>::keyExists(Key k){
-  //TODO
+	unsigned long i = calcIndex(k);
+	if (backingArray[i].k == k)
+		return true;
   return false;
 }
 
 template <class Key, class T>
 unsigned long HashTable<Key,T>::size(){
-  //TODO
 	return numItems;
 }
 
