@@ -83,23 +83,37 @@ private:
 
 template <class Key, class T>
 HashTable<Key,T>::HashTable(){
-  //TODO
+	backingArray = new HashRecord[hashPrimes[0]];
+	backingArraySize = hashPrimes[0];
+	numRemoved = 0;
+	numItems = 0;
 }
 
 template <class Key, class T>
 HashTable<Key,T>::~HashTable() {
-  //TODO
+	delete[] backingArray;
 }
 
 template <class Key, class T>
 unsigned long HashTable<Key,T>::calcIndex(Key k){
-  //TODO
+	unsigned long i = hash(k);
+	for (i; (i % backingArraySize) != i - 1; i++) {
+		if (backingArray[i % backingArraySize].isNull || backingArray[i % backingArraySize].k == k){
+			return (i % backingArraySize);
+		}
+	}
   return numItems; //This indicates failure, since it is an impossible value
 }
 
 template <class Key, class T>
 void HashTable<Key,T>::add(Key k, T x){
-  //TODO
+	if ((numItems + numRemoved) >= backingArraySize / 2)
+		grow();
+	unsigned long i = calcIndex(k);
+	backingArray[i].k = k;
+	backingArray[i].x = x;
+	backingArray[i].isNull = false;
+	numItems++;
 }
 
 template <class Key, class T>
@@ -123,7 +137,7 @@ bool HashTable<Key,T>::keyExists(Key k){
 template <class Key, class T>
 unsigned long HashTable<Key,T>::size(){
   //TODO
-  return 0;
+	return numItems;
 }
 
 template <class Key, class T>
