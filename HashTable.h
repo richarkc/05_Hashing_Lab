@@ -97,7 +97,7 @@ HashTable<Key,T>::~HashTable() {
 template <class Key, class T>
 unsigned long HashTable<Key,T>::calcIndex(Key k){
 	unsigned long i = hash(k);
-	for (i; (i % backingArraySize) != i - 1; i++) {
+	for (i; true; i++) {
 		if (backingArray[i % backingArraySize].isNull || backingArray[i % backingArraySize].k == k){
 			return (i % backingArraySize);
 		}
@@ -110,8 +110,10 @@ void HashTable<Key,T>::add(Key k, T x){
 	if ((numItems + numRemoved) >= backingArraySize / 2){
 		grow();
 	}
-	unsigned long i = hash(k);
-	for (i; (i % backingArraySize) != i - 1; i++) {
+	unsigned long i = hash(k);	
+	//Do not use calcIndex here as you have the extra condition of isDel to check for that none of the other methods need, thus it is not in calcIndex
+	for (i; true; i++) {
+		//breaking loop in code since this condition has to be fulfilled at some point to break the loop
 		if (backingArray[i % backingArraySize].isNull || backingArray[i % backingArraySize].k == k || backingArray[i % backingArraySize].isDel){
 			i = (i % backingArraySize);
 			break;
@@ -177,6 +179,7 @@ void HashTable<Key,T>::grow(){
 			
 		}
 	}
+	delete[] oldBackArray;
 	
 }
 
