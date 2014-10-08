@@ -77,6 +77,8 @@ private:
   unsigned long backingArraySize;
 };
 
+//Originality: All code in this program is entirely original with some lookups to stackOverflow.
+
 //You will need this so you can make a string to throw in
 // remove
 #include <string>
@@ -123,6 +125,7 @@ void HashTable<Key,T>::add(Key k, T x){
 	backingArray[i].k = k;
 	backingArray[i].x = x;
 	backingArray[i].isNull = false;
+	backingArray[i].isDel = false;
 	numItems++;
 }
 
