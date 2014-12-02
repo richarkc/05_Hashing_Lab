@@ -100,7 +100,7 @@ template <class Key, class T>
 unsigned long HashTable<Key,T>::calcIndex(Key k){
 	unsigned long i = hash(k);
 	for (i; true; i++) {
-		if (backingArray[i % backingArraySize].isNull || backingArray[i % backingArraySize].k == k){
+		if ((backingArray[i % backingArraySize].isNull || backingArray[i % backingArraySize].k == k ) && !backingArray[i % backingArraySize].isDel){
 			return (i % backingArraySize);
 		}
 	}
@@ -113,6 +113,20 @@ void HashTable<Key,T>::add(Key k, T x){
 		grow();
 	}
 	unsigned long i = hash(k);	
+	if (keyExists(k)) {
+		//key must exist, probe until you find it
+		for (i; true; i++) {
+		//breaking loop in code since this condition has to be fulfilled at some point to break the loop
+
+		if (backingArray[i % backingArraySize].k == k){
+			i = (i % backingArraySize);
+			break;
+		}
+
+	}
+	}
+	else {
+
 	//Do not use calcIndex here as you have the extra condition of isDel to check for that none of the other methods need, thus it is not in calcIndex
 	for (i; true; i++) {
 		//breaking loop in code since this condition has to be fulfilled at some point to break the loop
@@ -120,10 +134,14 @@ void HashTable<Key,T>::add(Key k, T x){
 			i = (i % backingArraySize);
 			break;
 		}
-		
+	}
 	}
 	backingArray[i].k = k;
 	backingArray[i].x = x;
+	if (backingArray[i].isNull == false)
+		numItems--;
+	if (backingArray[i].isDel == true)
+		numRemoved--;
 	backingArray[i].isNull = false;
 	backingArray[i].isDel = false;
 	numItems++;
@@ -151,7 +169,7 @@ T HashTable<Key,T>::find(Key k){
 template <class Key, class T>
 bool HashTable<Key,T>::keyExists(Key k){
 	unsigned long i = calcIndex(k);
-	if (backingArray[i].k == k && !backingArray[i].isDel)
+	if (backingArray[i].k == k && !backingArray[i].isDel && !backingArray[i].isNull)
 		return true;
   return false;
 }
